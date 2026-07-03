@@ -11,6 +11,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   useEffect(() => {
     if (!isPending && !session) router.push("/login");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, isPending]);
 
   if (isPending) return (

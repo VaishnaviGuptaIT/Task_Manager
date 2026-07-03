@@ -81,6 +81,7 @@ export function TaskDialog({ open, onClose, onSubmit, task }: TaskDialogProps) {
         dueDate: "",
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [task, open]);
 
   const handleSubmit = (values: FormValues) => {
