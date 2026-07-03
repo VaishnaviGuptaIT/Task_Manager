@@ -7,11 +7,11 @@ let authInstance: any = null;
 
 export const getAuth = async () => {
   const MONGODB_URI = process.env.MONGODB_URI;
-  
+
   if (!MONGODB_URI) {
     throw new Error("MONGODB_URI environment variable is not defined");
   }
-  
+
   if (!authInstance) {
     if (!db) {
       const client = new MongoClient(MONGODB_URI, {
@@ -24,37 +24,39 @@ export const getAuth = async () => {
       });
       try {
         await client.connect();
-      
+
         // Parse database name from connection string
         const url = new URL(MONGODB_URI);
-        const dbName = url.pathname.slice(1) || 'task-manager';
-        
+        const dbName = url.pathname.slice(1) || "task-manager";
+
         db = client.db(dbName);
-        
+
         // Test the connection by trying to list collections
         await db.listCollections().toArray();
-        
-        console.log('DB initialized:', db.databaseName);
-        console.log('DB has collection method:', typeof db.collection);
+
+        console.log("DB initialized:", db.databaseName);
+        console.log("DB has collection method:", typeof db.collection);
       } catch (error) {
-        console.error('MongoDB connection error:', error);
+        console.error("MongoDB connection error:", error);
         throw error;
       }
     }
-    
-    console.log('Creating auth instance with db:', db);
-    
+
+    console.log("Creating auth instance with db:", db);
+
     authInstance = betterAuth({
+      baseURL: process.env.NEXT_PUBLIC_APP_URL,
+      trustedOrigins: [process.env.NEXT_PUBLIC_APP_URL!],
       database: mongodbAdapter(db),
       emailAndPassword: {
         enabled: true,
       },
       session: {
-        expiresIn: 60 * 60 * 24 * 7, // 7 days
+        expiresIn: 60 * 60 * 24 * 7,
       },
     });
-    
-    console.log('Auth instance created successfully');
+
+    console.log("Auth instance created successfully");
   }
   return authInstance;
 };
@@ -66,6 +68,6 @@ export const auth = {
     getSession: async (opts: any) => {
       const instance = await getAuth();
       return await instance.api.getSession(opts);
-    }
-  }
+    },
+  },
 };
