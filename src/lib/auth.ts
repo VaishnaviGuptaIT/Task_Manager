@@ -2,14 +2,16 @@ import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "@better-auth/mongo-adapter";
 import { MongoClient, Db } from "mongodb";
 
-const MONGODB_URI = process.env.MONGODB_URI!;
-
-if (!MONGODB_URI) throw new Error("MONGODB_URI not defined");
-
 let db: Db | null = null;
 let authInstance: any = null;
 
 export const getAuth = async () => {
+  const MONGODB_URI = process.env.MONGODB_URI;
+  
+  if (!MONGODB_URI) {
+    throw new Error("MONGODB_URI environment variable is not defined");
+  }
+  
   if (!authInstance) {
     if (!db) {
       const client = new MongoClient(MONGODB_URI, {
