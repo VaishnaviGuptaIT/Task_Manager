@@ -46,7 +46,12 @@ export const getAuth = async () => {
 
     authInstance = betterAuth({
       baseURL: process.env.NEXT_PUBLIC_APP_URL,
-      trustedOrigins: [process.env.NEXT_PUBLIC_APP_URL!],
+      trustedOrigins: [
+        process.env.NEXT_PUBLIC_APP_URL!,
+        "http://localhost:3000",
+        "http://localhost:3001",
+        "http://127.0.0.1:3000",
+      ].filter(Boolean),
       database: mongodbAdapter(db),
       emailAndPassword: {
         enabled: true,
